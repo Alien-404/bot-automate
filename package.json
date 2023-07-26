@@ -11,6 +11,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "puppeteer": "^20.8.0"
+    "appium": "^2.0.1",
+    "puppeteer": "^20.9.0",
+    "puppeteer-core": "^20.9.0",
+    "wd": "^1.14.0"
   }
 }
