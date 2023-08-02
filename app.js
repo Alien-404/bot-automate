@@ -42,11 +42,11 @@ async function autoComment(url) {
 
         while (true) {
             // Wait for the new post to appear
-            await page.waitForSelector('div[role="article"]');
+            await page.waitForSelector('div[role="feed"]');
 
             // Check if the newest post has an image
             const latestPostImage = await page.evaluate(() => {
-                const postElement = document.querySelector('div[role="article"]');
+                const postElement = document.querySelector('div[role="feed"]');
                 const imageElement = postElement.querySelector('img');
                 return imageElement ? imageElement.src : null;
             });
