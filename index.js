@@ -102,8 +102,8 @@ async function mainBot() {
           // check comment post
           if (!isCommentExist) {
             // post commnet
-            await page.waitForSelector('div[role="article"]');
-            await page.type('div[role="article"]', configAccount.comment, {
+            await page.waitForSelector('div[role="textbox"]');
+            await page.type('div[role="textbox"]', configAccount.comment, {
               delay: 100,
             }); // configAccount.comment is comment from config.json
             await page.keyboard.press('Enter');

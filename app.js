@@ -73,8 +73,8 @@ async function autoComment(url) {
 
           if (!isCommentExist) {
             // If the comment doesn't exist in the post, proceed to post the comment
-            await page.waitForSelector('div[role="article"]');
-            await page.type('div[role="article"]', commentToPost, {
+            await page.waitForSelector('div[role="textbox"]');
+            await page.type('div[role="textbox"]', commentToPost, {
               delay: 100,
             });
             await page.keyboard.press('Enter');
