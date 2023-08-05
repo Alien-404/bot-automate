@@ -1,42 +1,69 @@
+// modules
 const puppeteer = require('puppeteer-core');
+const configAccount = require('./config.json');
+const commentedFile = require('./commented.json');
 const fs = require('fs');
-const commentedPosts = new Set();
 
-autoComment('https://www.facebook.com/');
+// config
+const commentedPosts = new Set(JSON.stringify(commentedFile));
 
+// helper
 function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function autoComment(url) {
+async function writeCommentedPosts() {
   try {
+    await fs.promises.writeFile(
+      './commented.json',
+      JSON.stringify([...commentedPosts]),
+      'utf8'
+    );
+  } catch (error) {
+    console.error(
+      'Terjadi kesalahan saat menulis ke commentedPosts.json:',
+      error
+    );
+  }
+}
+
+// main func
+async function mainBot() {
+  try {
+    // config puppeteer | just ignore it
     const browser = await puppeteer.launch({
       headless: false,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
     });
 
+    // setup browser | just ignore it
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
-    await page.goto(url, {
+    await page.goto('https://www.facebook.com/', {
       timeout: 0,
       waitUntil: 'networkidle0',
     });
 
-    // Login process
+    // login process
     await page.waitForSelector('input#email');
-    await page.type('input#email', 'pitertan0120@gmail.com', { delay: 100 });
+    await page.type('input#email', configAccount.account.email, { delay: 100 });
     await page.waitForSelector('input#pass');
-    await page.type('input#pass', 'pitertan2001', { delay: 100 });
+    await page.type('input#pass', configAccount.account.password, {
+      delay: 100,
+    });
     await page.keyboard.press('Enter');
 
+    // waiting page load
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-    await page.goto('https://www.facebook.com/groups/106641399183172/', {
+    // navigate to group page
+    await page.goto(configAccount.group_url, {
       timeout: 0,
       waitUntil: 'networkidle0',
     });
 
+    // infinite loop
     while (true) {
       // Wait for the new post to appear
       await page.waitForSelector('div[role="feed"]');
@@ -48,6 +75,7 @@ async function autoComment(url) {
         return imageElement ? imageElement.src : null;
       });
 
+      // check if true
       if (latestPostImage) {
         // If the newest post has an image and hasn't been commented yet, comment on it
         if (!commentedPosts.has(latestPostImage)) {
@@ -66,24 +94,26 @@ async function autoComment(url) {
             return commentsArray;
           });
 
-          const commentToPost = 'comment by anjas!';
+          // simple check if comment exist
           const isCommentExist = comments.some(
-            (comment) => comment === commentToPost
+            (comment) => comment === configAccount.comment
           );
 
+          // check comment post
           if (!isCommentExist) {
-            // If the comment doesn't exist in the post, proceed to post the comment
+            // post commnet
             await page.waitForSelector('div[role="article"]');
-            await page.type('div[role="article"]', commentToPost, {
+            await page.type('div[role="article"]', configAccount.comment, {
               delay: 100,
-            });
+            }); // configAccount.comment is comment from config.json
             await page.keyboard.press('Enter');
 
-            // Add the post URL to the set of commentedPosts
+            // save post to history file
             commentedPosts.add(latestPostImage);
+            await writeCommentedPosts();
 
-            // Wait for a short time to ensure the comment is posted successfully
-            await delay(2000);
+            // delay for success
+            await delay(2000); // 2 seconds
             console.log('Komentar berhasil diposting');
           } else {
             console.log(
@@ -93,6 +123,7 @@ async function autoComment(url) {
         } else {
           console.log('Postingan sudah dikomentari. Melewati...');
         }
+        // end if newest post has an image and hasn't been commented yet
 
         // Refresh the page regardless of whether the comment was posted or skipped
         await page.reload({ waitUntil: 'networkidle0' });
@@ -106,6 +137,19 @@ async function autoComment(url) {
       }
     }
   } catch (error) {
-    console.error('Terjadi kesalahan:', error);
+    console.error('something error : ', error);
   }
 }
+
+// run main function
+(() => {
+  if (
+    Object.values(configAccount.account).some((value) => value == null) ||
+    configAccount.comment == null ||
+    configAccount.group_url == null
+  ) {
+    console.log(`please run 'npm run setup' first!`);
+  } else {
+    mainBot();
+  }
+})();

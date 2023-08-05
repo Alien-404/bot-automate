@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js",
+    "check": "node ./config/check.js",
+    "setup": "node ./config/config.js"
   },
   "keywords": [],
   "author": "",
@@ -12,8 +13,10 @@
   "description": "",
   "dependencies": {
     "appium": "^2.0.1",
+    "inquirer": "^8.2.6",
     "puppeteer": "^20.9.0",
     "puppeteer-core": "^20.9.0",
-    "wd": "^1.14.0"
+    "wd": "^1.14.0",
+    "yargs": "^17.7.2"
   }
 }
