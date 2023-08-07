@@ -35,6 +35,7 @@ async function mainBot() {
       headless: false,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
+      executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
