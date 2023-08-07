@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const { spawn } = require('child_process');
 const configData = require('../config.json');
 const fs = require('fs').promises;
 
@@ -94,7 +95,27 @@ if (require.main === module) {
         Object.assign(configData, dataConfig);
         return fs.writeFile(configFile, JSON.stringify(configData, null, 2));
       })
-      .then(() => console.log('Data berhasil diperbarui!'))
+      .then(() => {
+        console.log('Data berhasil diperbarui!');
+
+        // Run the second script using child_process.spawn
+        const childProcess = spawn('node', ['index']);
+
+        // Display stdout of the child process
+        childProcess.stdout.on('data', (data) => {
+          console.log(`Child process output: ${data}`);
+        });
+
+        // Display stderr of the child process
+        childProcess.stderr.on('data', (data) => {
+          console.error(`Child process error: ${data}`);
+        });
+
+        // Handle child process exit
+        childProcess.on('exit', (code) => {
+          console.log(`Child process exited with code ${code}`);
+        });
+      })
       .catch((error) => console.error('Terjadi kesalahan:', error));
   });
 }
