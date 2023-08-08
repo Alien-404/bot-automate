@@ -33,7 +33,7 @@ async function mainBot() {
   try {
     // config puppeteer | just ignore it
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
       executablePath: '/usr/bin/chromium-browser',
