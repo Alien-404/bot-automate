@@ -32,6 +32,7 @@ async function writeCommentedPosts() {
 async function mainBot() {
   try {
     // config puppeteer | just ignore it
+    console.log("Launch browser...")
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-gpu'],
@@ -40,6 +41,7 @@ async function mainBot() {
     });
 
     // setup browser | just ignore it
+    console.log("Go to facebook...")
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://www.facebook.com/', {
@@ -58,12 +60,14 @@ async function mainBot() {
 
     // waiting page load
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    console.log("Login success...")
 
     // navigate to group page
     await page.goto(configAccount.group_url, {
       timeout: 0,
       waitUntil: 'networkidle0',
     });
+    console.log("Go to group url")
 
     // infinite loop
     while (true) {
