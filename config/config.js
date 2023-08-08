@@ -45,24 +45,28 @@ async function setup() {
       name: 'email',
       message: 'Masukkan email Facebook Anda:',
       validate: validateEmail,
+      when: process.stdin.isTTY,
     },
     {
       type: 'input',
       name: 'password',
       message: 'Masukkan password Facebook Anda:',
       validate: (input) => (input ? true : 'Password tidak boleh kosong.'),
+      when: process.stdin.isTTY,
     },
     {
       type: 'input',
       name: 'comment',
       message: 'Masukkan teks komentar Facebook Anda:',
       validate: (input) => (input ? true : 'Komentar tidak boleh kosong.'),
+      when: process.stdin.isTTY,
     },
     {
       type: 'input',
       name: 'group_url',
       message: 'Masukkan URL grup tujuan:',
       validate: validateUrl,
+      when: process.stdin.isTTY,
     },
   ]);
 
