@@ -1,6 +1,7 @@
 // modules
 const puppeteer = require('puppeteer-core');
 const configAccount = require('./config.json');
+const { spawn } = require('child_process');
 const commentedFile = require('./commented.json');
 const fs = require('fs');
 
@@ -150,6 +151,10 @@ async function mainBot() {
     configAccount.group_url == null
   ) {
     console.log(`please run 'npm run setup' first!`);
+    // Run the second script using child_process.spawn
+    spawn('node', ['config/config.js'], {
+      stdio: 'inherit',
+    });
   } else {
     mainBot();
   }

@@ -97,23 +97,9 @@ if (require.main === module) {
       })
       .then(() => {
         console.log('Data berhasil diperbarui!');
-
-        // Run the second script using child_process.spawn
-        const childProcess = spawn('node', ['index']);
-
-        // Display stdout of the child process
-        childProcess.stdout.on('data', (data) => {
-          console.log(`Child process output: ${data}`);
-        });
-
-        // Display stderr of the child process
-        childProcess.stderr.on('data', (data) => {
-          console.error(`Child process error: ${data}`);
-        });
-
-        // Handle child process exit
-        childProcess.on('exit', (code) => {
-          console.log(`Child process exited with code ${code}`);
+        
+        spawn('node', ['index'], {
+          stdio: 'inherit',
         });
       })
       .catch((error) => console.error('Terjadi kesalahan:', error));
