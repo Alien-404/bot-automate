@@ -67,7 +67,7 @@ async function mainBot() {
       timeout: 0,
       waitUntil: 'networkidle0',
     });
-    console.log("Go to group url")
+    console.log("Go to group url : " , configAccount.group_url)
 
     // infinite loop
     while (true) {
