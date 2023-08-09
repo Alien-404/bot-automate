@@ -72,7 +72,20 @@ async function mainBot() {
     // infinite loop
     while (true) {
       // Wait for the new post to appear
-      await page.waitForSelector('div[role="feed"]');
+      // await page.waitForSelector('div[role="feed"]');
+      while (true) {
+        const feedVisible = await page.evaluate(() => {
+          const feed = document.querySelector('div[role="feed"]');
+          return feed && window.getComputedStyle(feed).display !== 'none';
+        });
+
+        if (feedVisible) {
+          break; // Exit the loop if the textbox is visible
+        }
+
+        await page.reload({ waitUntil: 'networkidle2' });
+        await delay(1000); // Wait for 1 second before checking again
+      }
 
       // Check if the newest post has an image
       const latestPostImage = await page.evaluate(() => {
@@ -149,12 +162,12 @@ async function mainBot() {
         // Refresh the page regardless of whether the comment was posted or skipped
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('Refreshing halaman...');
-        await delay(2000);
+        // await delay(2000);
       } else {
         // If the newest post doesn't have an image, exit the loop
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('No image found. Refreshing the page...');
-        await delay(2000);
+        // await delay(2000);
       }
     }
   } catch (error) {
