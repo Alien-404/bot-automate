@@ -63,7 +63,7 @@ async function mainBot() {
     console.log("Login success...")
 
     // navigate to group page
-    await page.goto(configAccount.group_url, {
+    await page.goto(configAccount.group_url + "?sorting_setting=CHRONOLOGICAL", {
       timeout: 0,
       waitUntil: 'networkidle2',
     });
@@ -84,7 +84,7 @@ async function mainBot() {
         }
 
         await page.reload({ waitUntil: 'networkidle2' });
-        await delay(1000); // Wait for 1 second before checking again
+        await delay(3000); // Wait for 1 second before checking again 
       }
 
       // Check if the newest post has an image
@@ -134,7 +134,7 @@ async function mainBot() {
               }
 
               await page.reload({ waitUntil: 'networkidle2' });
-              await delay(1000); // Wait for 1 second before checking again
+              await delay(3000); // Wait for 1 second before checking again
             }
 
             await page.type('div[role="textbox"]', configAccount.comment, {
@@ -162,12 +162,12 @@ async function mainBot() {
         // Refresh the page regardless of whether the comment was posted or skipped
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('Refreshing halaman...');
-        // await delay(2000);
+        await delay(5000);
       } else {
         // If the newest post doesn't have an image, exit the loop
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('No image found. Refreshing the page...');
-        // await delay(2000);
+        await delay(5000);
       }
     }
   } catch (error) {
