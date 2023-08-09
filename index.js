@@ -67,7 +67,7 @@ async function mainBot() {
       timeout: 0,
       waitUntil: 'networkidle0',
     });
-    console.log("Go to group url : " , configAccount.group_url)
+    console.log("Go to group url : ", configAccount.group_url)
 
     // infinite loop
     while (true) {
@@ -108,7 +108,21 @@ async function mainBot() {
           // check comment post
           if (!isCommentExist) {
             // post commnet
-            await page.waitForSelector('div[role="textbox"]');
+            // await page.waitForSelector('div[role="textbox"]');
+
+            while (true) {
+              const textboxVisible = await page.evaluate(() => {
+                const textbox = document.querySelector('div[role="textbox"]');
+                return textbox && window.getComputedStyle(textbox).display !== 'none';
+              });
+
+              if (textboxVisible) {
+                break; // Exit the loop if the textbox is visible
+              }
+
+              await delay(1000); // Wait for 1 second before checking again
+            }
+
             await page.type('div[role="textbox"]', configAccount.comment, {
               delay: 100,
             }); // configAccount.comment is comment from config.json
@@ -134,12 +148,12 @@ async function mainBot() {
         // Refresh the page regardless of whether the comment was posted or skipped
         await page.reload({ waitUntil: 'networkidle0' });
         console.log('Refreshing halaman...');
-        await delay(5000);
+        // await delay(5000);
       } else {
         // If the newest post doesn't have an image, exit the loop
         await page.reload({ waitUntil: 'networkidle0' });
         console.log('No image found. Refreshing the page...');
-        await delay(5000);
+        // await delay(5000);
       }
     }
   } catch (error) {
