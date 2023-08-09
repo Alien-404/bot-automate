@@ -46,7 +46,7 @@ async function mainBot() {
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://www.facebook.com/', {
       timeout: 0,
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle2',
     });
 
     // login process
@@ -59,13 +59,13 @@ async function mainBot() {
     await page.keyboard.press('Enter');
 
     // waiting page load
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
     console.log("Login success...")
 
     // navigate to group page
     await page.goto(configAccount.group_url, {
       timeout: 0,
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle2',
     });
     console.log("Go to group url : ", configAccount.group_url)
 
@@ -146,14 +146,14 @@ async function mainBot() {
         // end if newest post has an image and hasn't been commented yet
 
         // Refresh the page regardless of whether the comment was posted or skipped
-        await page.reload({ waitUntil: 'networkidle0' });
+        await page.reload({ waitUntil: 'networkidle2' });
         console.log('Refreshing halaman...');
-        // await delay(5000);
+        await delay(2000);
       } else {
         // If the newest post doesn't have an image, exit the loop
-        await page.reload({ waitUntil: 'networkidle0' });
+        await page.reload({ waitUntil: 'networkidle2' });
         console.log('No image found. Refreshing the page...');
-        // await delay(5000);
+        await delay(2000);
       }
     }
   } catch (error) {
