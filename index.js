@@ -120,6 +120,7 @@ async function mainBot() {
                 break; // Exit the loop if the textbox is visible
               }
 
+              await page.reload({ waitUntil: 'networkidle2' });
               await delay(1000); // Wait for 1 second before checking again
             }
 
