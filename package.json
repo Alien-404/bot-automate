@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "public": "node index.js",
+    "private": "node private.js",
     "check": "node ./config/check.js",
     "setup": "node ./config/config.js"
   },

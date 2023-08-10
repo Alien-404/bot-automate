@@ -93,7 +93,7 @@ async function mainBot() {
         });
 
         if (feedVisible) {
-          break; // Exit the loop if the feed is visible
+          break; // Exit the loop if the feed is visible  
         }
 
         await page.reload({ waitUntil: 'networkidle2' });
@@ -107,6 +107,7 @@ async function mainBot() {
           feedElement && feedElement.querySelector('div:nth-child(2)');
 
         if (checkImage) {
+          // kalau ada bug, check disini
           const imageElement = checkImage.querySelector('img');
           return imageElement ? imageElement.src : null;
         }
