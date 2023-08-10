@@ -46,7 +46,7 @@ async function mainBot() {
       headless: true,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
-      // executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
@@ -206,7 +206,7 @@ async function mainBot() {
     configAccount.comment == null ||
     configAccount.group_url == null
   ) {
-    console.log(`please run 'npm run setup' first!`);
+    console.log(`please setup the account`);
     // Run the second script using child_process.spawn
     spawn('node', ['config/config.js'], {
       stdio: 'inherit',
