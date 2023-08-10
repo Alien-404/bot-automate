@@ -35,6 +35,8 @@ function compareUrlsIgnoreSid(url1, url2) {
 }
 
 
+
+
 // main func
 async function mainBot() {
   try {
@@ -70,7 +72,7 @@ async function mainBot() {
     console.log("Login success...")
 
     // navigate to group page
-    await page.goto(configAccount.group_url + "?sorting_setting=CHRONOLOGICAL", {
+    await page.goto((configAccount.group_url).replace(/\/$/, '') + "?sorting_setting=CHRONOLOGICAL", {
       timeout: 0,
       waitUntil: 'networkidle2',
     });
