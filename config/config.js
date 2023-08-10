@@ -102,9 +102,9 @@ if (require.main === module) {
       .then(() => {
         console.log('Data berhasil diperbarui!');
         
-        spawn('node', ['index'], {
-          stdio: 'inherit',
-        });
+        // spawn('node', ['index', '712379'], {
+        //   stdio: 'inherit',
+        // });
       })
       .catch((error) => console.error('Terjadi kesalahan:', error));
   });
