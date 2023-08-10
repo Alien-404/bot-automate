@@ -17,7 +17,6 @@
     "bcrypt": "^5.1.0",
     "child_process": "^1.0.2",
     "inquirer": "^8.2.6",
-    "node-fetch": "^3.3.2",
     "puppeteer-core": "^20.9.0",
     "wd": "^1.14.0",
     "yargs": "^17.7.2"
