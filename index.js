@@ -188,12 +188,10 @@ async function mainBot() {
         // Refresh the page regardless of whether the comment was posted or skipped
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('Refreshing halaman...');
-        await delay(5000);
       } else {
         // If the newest post doesn't have an image, exit the loop
         await page.reload({ waitUntil: 'networkidle2' });
         console.log('No image found. Refreshing the page...');
-        await delay(5000);
       }
     }
   } catch (error) {
