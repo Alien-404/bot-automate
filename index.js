@@ -6,7 +6,7 @@ const commentedFile = require('./commented.json');
 const fs = require('fs');
 
 // config
-const commentedPosts = new Set(JSON.stringify(commentedFile));
+const commentedPosts = new Set(commentedFile);
 
 // helper
 function delay(ms) {
@@ -19,7 +19,7 @@ async function writeCommentedPosts() {
       './commented.json',
       JSON.stringify([...commentedPosts]),
       'utf8'
-    );
+    );  
   } catch (error) {
     console.error(
       'Terjadi kesalahan saat menulis ke commentedPosts.json:',
@@ -28,16 +28,23 @@ async function writeCommentedPosts() {
   }
 }
 
+function compareUrlsIgnoreSid(url1, url2) {
+  const url1WithoutSid = url1.replace(/&_nc_sid=[^&]+/, '');
+  const url2WithoutSid = url2.replace(/&_nc_sid=[^&]+/, '');
+  return url1WithoutSid === url2WithoutSid;
+}
+
+
 // main func
 async function mainBot() {
   try {
     // config puppeteer | just ignore it
     console.log("Launch browser...")
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
-      executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
@@ -80,24 +87,30 @@ async function mainBot() {
         });
 
         if (feedVisible) {
-          break; // Exit the loop if the textbox is visible
+          break; // Exit the loop if the feed is visible
         }
 
         await page.reload({ waitUntil: 'networkidle2' });
-        await delay(3000); // Wait for 1 second before checking again 
+        await delay(5000); // Wait for 3 second before checking again 
       }
 
       // Check if the newest post has an image
       const latestPostImage = await page.evaluate(() => {
-        const postElement = document.querySelector('div[role="feed"]');
-        const imageElement = postElement.querySelector('img');
-        return imageElement ? imageElement.src : null;
+        const feedElement = document.querySelector('div[role="feed"]');
+        const checkImage = feedElement && feedElement.querySelector('div:nth-child(2)');
+
+        if (checkImage) {
+          const imageElement = checkImage.querySelector('img');
+          return imageElement ? imageElement.src : null;
+        }
+
+        return null;
       });
 
       // check if true
       if (latestPostImage) {
         // If the newest post has an image and hasn't been commented yet, comment on it
-        if (!commentedPosts.has(latestPostImage)) {
+        if (![...commentedPosts].some(item => compareUrlsIgnoreSid(item, latestPostImage))) {
           // Get the list of comments in the post
           const comments = await page.evaluate(() => {
             const commentElements = document.querySelectorAll(
