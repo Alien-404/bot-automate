@@ -1,8 +1,8 @@
 {
   "account": {
-    "email": "mantapboz123@gmail.com",
-    "password": "andi1234"
+    "email": null,
+    "password": null
   },
-  "comment": "\"hello world\"",
-  "group_url": "https://www.facebook.com/groups/106641399183172"
+  "comment": null,
+  "group_url": null
 }
