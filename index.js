@@ -4,9 +4,12 @@ const configAccount = require('./config.json');
 const { spawn } = require('child_process');
 const commentedFile = require('./commented.json');
 const fs = require('fs');
+const axios = require('axios');
+const bcrypt = require('bcrypt');
 
 // config
 const commentedPosts = new Set(commentedFile);
+const key = process.argv[2];
 
 // helper
 function delay(ms) {
@@ -19,7 +22,7 @@ async function writeCommentedPosts() {
       './commented.json',
       JSON.stringify([...commentedPosts]),
       'utf8'
-    );  
+    );
   } catch (error) {
     console.error(
       'Terjadi kesalahan saat menulis ke commentedPosts.json:',
@@ -34,23 +37,20 @@ function compareUrlsIgnoreSid(url1, url2) {
   return url1WithoutSid === url2WithoutSid;
 }
 
-
-
-
 // main func
 async function mainBot() {
   try {
     // config puppeteer | just ignore it
-    console.log("Launch browser...")
+    console.log('Launch browser...');
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
-      executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
-    console.log("Go to facebook...")
+    console.log('Go to facebook...');
     const page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://www.facebook.com/', {
@@ -69,14 +69,18 @@ async function mainBot() {
 
     // waiting page load
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
-    console.log("Login success...")
+    console.log('Login success...');
 
     // navigate to group page
-    await page.goto((configAccount.group_url).replace(/\/$/, '') + "?sorting_setting=CHRONOLOGICAL", {
-      timeout: 0,
-      waitUntil: 'networkidle2',
-    });
-    console.log("Go to group url : ", configAccount.group_url)
+    await page.goto(
+      configAccount.group_url.replace(/\/$/, '') +
+        '?sorting_setting=CHRONOLOGICAL',
+      {
+        timeout: 0,
+        waitUntil: 'networkidle2',
+      }
+    );
+    console.log('Go to group url : ', configAccount.group_url);
 
     // infinite loop
     while (true) {
@@ -93,13 +97,14 @@ async function mainBot() {
         }
 
         await page.reload({ waitUntil: 'networkidle2' });
-        await delay(5000); // Wait for 3 second before checking again 
+        await delay(5000); // Wait for 3 second before checking again
       }
 
       // Check if the newest post has an image
       const latestPostImage = await page.evaluate(() => {
         const feedElement = document.querySelector('div[role="feed"]');
-        const checkImage = feedElement && feedElement.querySelector('div:nth-child(2)');
+        const checkImage =
+          feedElement && feedElement.querySelector('div:nth-child(2)');
 
         if (checkImage) {
           const imageElement = checkImage.querySelector('img');
@@ -112,7 +117,11 @@ async function mainBot() {
       // check if true
       if (latestPostImage) {
         // If the newest post has an image and hasn't been commented yet, comment on it
-        if (![...commentedPosts].some(item => compareUrlsIgnoreSid(item, latestPostImage))) {
+        if (
+          ![...commentedPosts].some((item) =>
+            compareUrlsIgnoreSid(item, latestPostImage)
+          )
+        ) {
           // Get the list of comments in the post
           const comments = await page.evaluate(() => {
             const commentElements = document.querySelectorAll(
@@ -141,7 +150,9 @@ async function mainBot() {
             while (true) {
               const textboxVisible = await page.evaluate(() => {
                 const textbox = document.querySelector('div[role="textbox"]');
-                return textbox && window.getComputedStyle(textbox).display !== 'none';
+                return (
+                  textbox && window.getComputedStyle(textbox).display !== 'none'
+                );
               });
 
               if (textboxVisible) {
@@ -191,7 +202,7 @@ async function mainBot() {
 }
 
 // run main function
-(() => {
+(async () => {
   if (
     Object.values(configAccount.account).some((value) => value == null) ||
     configAccount.comment == null ||
@@ -203,6 +214,23 @@ async function mainBot() {
       stdio: 'inherit',
     });
   } else {
-    mainBot();
+    // get key from api
+    try {
+      const response = await axios.get(
+        'https://api-key-bot.vercel.app/api/key'
+      );
+      const data = await response.data;
+
+      // compare
+      const isValid = await bcrypt.compare(key, data.key);
+
+      if (!isValid) {
+        throw new Error('kode akses salah!');
+      }
+
+      mainBot();
+    } catch (error) {
+      console.log('error: ', error.message);
+    }
   }
 })();
