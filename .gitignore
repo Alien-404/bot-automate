@@ -2,3 +2,5 @@ node_modules
 pictures
 cookies.json
 server.js
+config.json
+commented.json
