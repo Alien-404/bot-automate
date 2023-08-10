@@ -37,6 +37,17 @@ function compareUrlsIgnoreSid(url1, url2) {
   return url1WithoutSid === url2WithoutSid;
 }
 
+function getGroupIdFromUrl(url) {
+  const regex = /\/groups\/(\d+)/;
+  const match = url.match(regex);
+
+  if (match && match.length >= 2) {
+    return match[1];
+  }
+
+  return null; // Return null if Group ID is not found
+}
+
 // main func
 async function mainBot() {
   try {
@@ -71,16 +82,16 @@ async function mainBot() {
     await page.waitForNavigation({ waitUntil: 'networkidle2' });
     console.log('Login success...');
 
+    const groupId = getGroupIdFromUrl(configAccount.group_url);
+    let groupUrl = 'https://www.facebook.com/groups/' + groupId + '?sorting_setting=CHRONOLOGICAL'
     // navigate to group page
-    await page.goto(
-      configAccount.group_url.replace(/\/$/, '') +
-        '?sorting_setting=CHRONOLOGICAL',
+    await page.goto(groupUrl,
       {
         timeout: 0,
         waitUntil: 'networkidle2',
       }
     );
-    console.log('Go to group url : ', configAccount.group_url);
+    console.log('Go to group url : ', groupUrl);
 
     // infinite loop
     while (true) {
