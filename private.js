@@ -65,6 +65,7 @@ async function mainBot() {
         // setup browser | just ignore it
         console.log('Go to facebook...');
         const page = await browser.newPage();
+        await page.setDefaultNavigationTimeout(0);
         await page.setViewport({ width: 1920, height: 1080 });
         await page.goto('https://www.facebook.com/', {
             timeout: 0,
@@ -73,10 +74,10 @@ async function mainBot() {
 
         // login process
         await page.waitForSelector('input#email');
-        await page.type('input#email', configAccount.account.email, { delay: 100 });
+        await page.type('input#email', configAccount.account.email, { delay: 0 });
         await page.waitForSelector('input#pass');
         await page.type('input#pass', configAccount.account.password, {
-            delay: 100,
+            delay: 0,
         });
         await page.keyboard.press('Enter');
 
@@ -107,7 +108,7 @@ async function mainBot() {
                 }
 
                 await page.reload({ waitUntil: 'networkidle2' });
-                await delay(5000); // Wait for 3 second before checking again
+                await delay(3000); // Wait for 3 second before checking again
             }
 
             // Check if the newest post has an image
@@ -175,7 +176,7 @@ async function mainBot() {
                         }
 
                         await page.type('div[role="textbox"]', configAccount.comment, {
-                            delay: 100,
+                            delay: 0,
                         }); // configAccount.comment is comment from config.json
                         await page.keyboard.press('Enter');
 
@@ -184,7 +185,7 @@ async function mainBot() {
                         await writeCommentedPosts();
 
                         // delay for success
-                        await delay(2000); // 2 seconds
+                        // await delay(2000); // 2 seconds
                         console.log('Komentar berhasil diposting');
                     } else {
                         console.log(
