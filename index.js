@@ -43,7 +43,7 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: 'new',
+      headless: false,
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
       // executablePath: '/usr/bin/chromium-browser',
