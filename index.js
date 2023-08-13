@@ -43,7 +43,7 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: 'new',
       args: ['--no-sandbox', '--disable-gpu'],
       channel: 'chrome',
       // executablePath: '/usr/bin/chromium-browser',
@@ -100,9 +100,12 @@ async function mainBot() {
         await delay(5000); // Wait for 3 second before checking again
       }
 
+      let test;
+
       // Check if the newest post has an image
       const latestPostImage = await page.evaluate(() => {
         const feedElement = document.querySelector('div[role="feed"]');
+        test = feedElement;
         const checkImage =
           feedElement && feedElement.querySelector('div:nth-child(2)');
 
@@ -113,6 +116,8 @@ async function mainBot() {
 
         return null;
       });
+
+      console.log(test);
 
       // check if true
       if (latestPostImage) {
@@ -163,10 +168,10 @@ async function mainBot() {
               await delay(3000); // Wait for 1 second before checking again
             }
 
-            await page.type('div[role="textbox"]', configAccount.comment, {
-              delay: 100,
-            }); // configAccount.comment is comment from config.json
-            await page.keyboard.press('Enter');
+            // await page.type('div[role="textbox"]', configAccount.comment, {
+            //   delay: 100,
+            // }); // configAccount.comment is comment from config.json
+            // await page.keyboard.press('Enter');
 
             // save post to history file
             commentedPosts.add(latestPostImage);
