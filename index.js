@@ -64,6 +64,7 @@ async function mainBot() {
     // setup browser | just ignore it
     console.log('Go to facebook...');
     const page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(0);
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://www.facebook.com/', {
       timeout: 0,
@@ -174,9 +175,7 @@ async function mainBot() {
               await delay(3000); // Wait for 1 second before checking again
             }
 
-            await page.type('div[role="textbox"]', configAccount.comment, {
-              delay: 0,
-            }); // configAccount.comment is comment from config.json
+            await page.type('div[role="textbox"]', configAccount.comment); // configAccount.comment is comment from config.json
             await page.keyboard.press('Enter');
 
             // save post to history file

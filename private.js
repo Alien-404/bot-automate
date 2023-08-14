@@ -49,7 +49,6 @@ function formatGroup(url) {
     return baseURL;
 }
 
-
 // main func
 async function mainBot() {
     try {
@@ -175,9 +174,7 @@ async function mainBot() {
                             await delay(3000); // Wait for 1 second before checking again
                         }
 
-                        await page.type('div[role="textbox"]', configAccount.comment, {
-                            delay: 0,
-                        }); // configAccount.comment is comment from config.json
+                        await page.type('div[role="textbox"]', configAccount.comment); // configAccount.comment is comment from config.json
                         await page.keyboard.press('Enter');
 
                         // save post to history file
