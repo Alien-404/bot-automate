@@ -118,10 +118,10 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      // executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
