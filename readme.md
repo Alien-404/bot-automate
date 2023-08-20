@@ -21,10 +21,16 @@ Untuk menjalankan skrip menggunakan Node.js, lakukan langkah berikut:
 3. Jalankan perintah berikut:
 
    ```sh
-   npm start
+   npm start ['private' or 'public'] ['access code']
    ```
 
 Ini akan menjalankan skrip yang disebut `index.js`.
+
+example:
+
+```sh
+npm start private 123456
+```
 
 ## Memeriksa Konfigurasi Akun
 
@@ -47,7 +53,7 @@ npm run setup
 Jika Anda ingin mengkonfigurasi akun satu per satu dengan flag-flag tertentu, gunakan perintah berikut:
 
 ```sh
-node ./config/single -e <email> -p <password> -c <comment> -g <group_url>
+node ./src/config/single -e <email> -p <password> -c <comment> -g <group_url>
 ```
 
 Gantilah email, password, comment, dan group_url dengan nilai yang sesuai. (note bisa satu argumnet saja yang diganti)

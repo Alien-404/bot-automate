@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "public": "node index.js",
-    "private": "node private.js",
-    "check": "node ./config/check.js",
-    "setup": "node ./config/config.js"
+    "check": "node ./src/config/check.js",
+    "setup": "node ./src/config/config.js",
+    "start": "node ./src/index.js"
   },
   "keywords": [],
   "author": "",

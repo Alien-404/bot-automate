@@ -2,3 +2,8 @@ node_modules
 pictures
 cookies.json
 server.js
+
+# config
+src/env/config.json
+src/env/commented.json
+src/env/cookies.json
