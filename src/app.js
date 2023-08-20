@@ -8,21 +8,24 @@ const {
   getLatestPostImage,
   getComments,
 } = require('./libs/jobs/atom.job');
-const { formatGroupUtil, delayUtil } = require('./libs/utils');
-const compareUrlsIgnoreSid = require('./libs/utils/url.util');
-const writeCommentedPosts = require('./libs/utils/comment.util');
-const loadCommentedPosts = require('./libs/utils/load-comment.util');
-const writeDataToFile = require('./libs/utils/cookies-file.util');
-const loadCookiesFromFile = require('./libs/utils/cookies.util');
+const {
+  formatGroupUtil,
+  delayUtil,
+  urlUtil,
+  commentUtil,
+  loadCommentUtil,
+  cookiesFileUtil,
+  cookiesUtil,
+} = require('./libs/utils');
 const configAccount = require(path.join(__dirname, '/env/config.json'));
 
 // config
-const commentedPosts = loadCommentedPosts();
+const commentedPosts = loadCommentUtil();
 
 // main bot
 async function mainBot(childNumber = 8) {
   // get cookies
-  const cookies = await loadCookiesFromFile();
+  const cookies = await cookiesUtil();
 
   try {
     // config puppeteer | just ignore it
@@ -69,7 +72,7 @@ async function mainBot(childNumber = 8) {
 
       // set cookies
       let currentCookies = await page.cookies();
-      await writeDataToFile(JSON.stringify(currentCookies), 'cookies.json');
+      await cookiesFileUtil(JSON.stringify(currentCookies));
       console.log('save session...');
     }
 
@@ -110,7 +113,7 @@ async function mainBot(childNumber = 8) {
       if (latestPostImage) {
         // If the newest post has an image and hasn't been commented yet, comment on it
         const isCommentedBefore = [...commentedPosts].some((item) =>
-          compareUrlsIgnoreSid(item.comment, latestPostImage)
+          urlUtil(item.comment, latestPostImage)
         );
 
         if (!isCommentedBefore) {
@@ -129,7 +132,7 @@ async function mainBot(childNumber = 8) {
             // await page.keyboard.press('Enter');
 
             // save post to history file
-            await writeCommentedPosts(latestPostImage);
+            await commentUtil(latestPostImage);
 
             console.log(
               `[${new Date().toLocaleString()}] Komentar berhasil diposting`
