@@ -6,9 +6,7 @@ const commentedFile = require('./commented.json');
 const fs = require('fs');
 const axios = require('axios');
 const bcrypt = require('bcrypt');
-const cheerio = require('cheerio');
 const jsdom = require('jsdom');
-const { config } = require('yargs');
 const { JSDOM } = jsdom;
 
 // config
@@ -75,7 +73,6 @@ function extractItems() {
       if (checkImage) {
         const imageElement = checkImage.querySelector('img.x1ey2m1c');
         const result = imageElement ? imageElement.src : null
-        console.log(i + ' : ' + result)
         if (result) {
           feedElements[i].classList.add(`item-0`);
           newPosts.push(result);
