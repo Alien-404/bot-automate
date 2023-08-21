@@ -64,14 +64,17 @@ async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
+  // const numToPosts = Math.min(feedElements.length, 100)
+
   for (let i = 0; i < 100; i++) {
     if (feedElements[i]) {
       
       const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(8)');
-      const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-      
-      if (checkImage && checkAdmin) {
-        if (checkAdmin.innerHTML === 'Admin') {
+      // const checkAdmin = feedElements[i].querySelector(".x1j85h84");
+
+      // if (checkImage && checkAdmin) {
+      if (checkImage) {
+        // if (checkAdmin.innerHTML === 'Admin') {
           const imageElement = checkImage.querySelector('img.x1ey2m1c');
           const result = imageElement ? imageElement.src : null
           if (result !== null) {
@@ -81,7 +84,7 @@ async function extractItems() {
             break;
           }
         }
-      }
+      // }
     }
   }
   return newPosts;
@@ -207,6 +210,7 @@ async function mainBot() {
       // run function to comment on the post
       await commentOnPosts(page, textBoxs).then(async () => {
         console.log("Refreshing...")
+        await delay(1000);
         await page.reload({ waitUntil: 'networkidle2' })
       });
     }
