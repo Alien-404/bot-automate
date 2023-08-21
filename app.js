@@ -117,10 +117,10 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
@@ -130,7 +130,7 @@ async function mainBot() {
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://web.facebook.com/', {
       timeout: 0,
-      waitUntil: 'networkidle2',
+      waitUntil: 'networkidle0',
     });
 
     // login process
@@ -143,13 +143,13 @@ async function mainBot() {
     await page.keyboard.press('Enter');
 
     // waiting page load
-    await page.waitForNavigation({ waitUntil: 'networkidle2' });
+    await page.waitForNavigation({ waitUntil: 'networkidle0' });
     console.log('Login success...');
 
     await page.goto(formatGroup(configAccount.group_url) + '?sorting_setting=CHRONOLOGICAL',
       {
         timeout: 0,
-        waitUntil: 'networkidle2',
+        waitUntil: 'networkidle0',
       }
     );
     console.log('Go to group url : ', formatGroup(configAccount.group_url));
@@ -168,7 +168,7 @@ async function mainBot() {
         break; // Exit the loop if the feed is visible  
       }
 
-      await page.reload({ waitUntil: 'networkidle2' });
+      await page.reload({ waitUntil: 'networkidle0' });
       await delay(3000); // Wait for 3 second before checking again
     }
 
