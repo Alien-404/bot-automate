@@ -68,13 +68,13 @@ async function extractItems() {
 
   for (let i = 0; i < 100; i++) {
     if (feedElements[i]) {
-      
+
       const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(8)');
-      // const checkAdmin = feedElements[i].querySelector(".x1j85h84");
 
       // if (checkImage && checkAdmin) {
       if (checkImage) {
-        // if (checkAdmin.innerHTML === 'Admin') {
+        const checkAdmin = feedElements[i].querySelector(".x1j85h84");
+        if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
           const imageElement = checkImage.querySelector('img.x1ey2m1c');
           const result = imageElement ? imageElement.src : null
           if (result !== null) {
@@ -84,7 +84,7 @@ async function extractItems() {
             break;
           }
         }
-      // }
+      }
     }
   }
   return newPosts;
