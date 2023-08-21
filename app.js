@@ -75,14 +75,14 @@ async function extractItems() {
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
         if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
-        const imageElement = checkImage.querySelector('img.x1ey2m1c');
-        const result = imageElement ? imageElement.src : null
-        if (result !== null) {
-          feedElements[i].classList.add(`item-0`);
-          newPosts.push(result);
-          i = 999;
-          break;
-        }
+          const imageElement = checkImage.querySelector('img.x1ey2m1c');
+          const result = imageElement ? imageElement.src : null
+          if (result !== null) {
+            feedElements[i].classList.add(`item-0`);
+            newPosts.push(result);
+            i = 999;
+            break;
+          }
         }
       }
     }
@@ -132,6 +132,7 @@ async function mainBot() {
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
     await page.setViewport({ width: 1920, height: 1080 });
+    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36');
     await page.goto('https://web.facebook.com/', {
       timeout: 0,
       waitUntil: 'networkidle2',
