@@ -120,7 +120,7 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
       executablePath: '/usr/bin/chromium-browser',
@@ -180,7 +180,6 @@ async function mainBot() {
     while (true) {
       console.log("Checking post...")
       const items = await scrapeItems(page, extractItems, 100);
-      console.log(items)
 
       let textBoxs = [];
       for (const item of items) {
