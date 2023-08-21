@@ -60,26 +60,29 @@ function formatGroup(url) {
   return baseURL;
 }
 
-function extractItems() {
+async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
   // Limit the loop to process the first 10 posts
   const numPostsToProcess = Math.min(feedElements.length, 100);
 
-  for (let i = 0; i < numPostsToProcess; i++) {
+  for (let i = 0; i < 100; i++) {
     if (feedElements[i]) {
+      const checkAdmin = feedElements[i].querySelector(".x1j85h84");
+
       const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(8)');
-      if (checkImage) {
-        const imageElement = checkImage.querySelector('img.x1ey2m1c');
-        // const result = imageElement ? feedElements[i].innerHTML : null
-        const result = imageElement ? imageElement.src : null
-        // console.log(i + ' : ' + result)
-        if (result !== null) {
-          feedElements[i].classList.add(`item-0`);
-          newPosts.push(result);
-          i = 999;
-          break;
+
+      if (checkImage && checkAdmin) {
+        if (checkAdmin.innerHTML === 'Admin') {
+          const imageElement = checkImage.querySelector('img.x1ey2m1c');
+          const result = imageElement ? imageElement.src : null
+          if (result !== null) {
+            feedElements[i].classList.add(`item-0`);
+            newPosts.push(result);
+            i = 999;
+            break;
+          }
         }
       }
     }
@@ -117,10 +120,10 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: false,
+      headless: true,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      // executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
