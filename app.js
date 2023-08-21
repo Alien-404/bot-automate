@@ -64,9 +64,6 @@ async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
-  // Limit the loop to process the first 10 posts
-  const numPostsToProcess = Math.min(feedElements.length, 100);
-
   for (let i = 0; i < 100; i++) {
     if (feedElements[i]) {
       
@@ -178,6 +175,7 @@ async function mainBot() {
     while (true) {
       console.log("Checking post...")
       const items = await scrapeItems(page, extractItems, 100);
+      console.log(items)
 
       let textBoxs = [];
       for (const item of items) {
@@ -250,9 +248,9 @@ async function commentOnPosts(page, textBoxs) {
         }
       }
     }
-    // else {
-    //   console.log("Tidak menemukan gambar. Melewati...");
-    // }
+    else {
+      console.log("Tidak menemukan textbox untuk dikomentari");
+    }
     // await delay(1000);
   }
 
