@@ -72,9 +72,10 @@ function extractItems() {
             const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(2)');
             if (checkImage) {
                 const imageElement = checkImage.querySelector('img.x1ey2m1c');
+                // const result = imageElement ? feedElements[i].innerHTML : null
                 const result = imageElement ? imageElement.src : null
-                console.log(i + ' : ' + result)
-                if (result) {
+                // console.log(i + ' : ' + result)
+                if (result !== null) {
                     feedElements[i].classList.add(`item-0`);
                     newPosts.push(result);
                     i = 999;
@@ -127,7 +128,7 @@ async function mainBot() {
         const page = await browser.newPage();
         await page.setDefaultNavigationTimeout(0);
         await page.setViewport({ width: 1920, height: 1080 });
-        await page.goto('https://www.facebook.com/', {
+        await page.goto('https://web.facebook.com/', {
             timeout: 0,
             waitUntil: 'networkidle2',
         });
@@ -201,58 +202,58 @@ async function mainBot() {
                 textBoxs.push(found);
             }
 
-            async function commentOnPosts(page) {
-                const commentPromises = [];
-
-                for (let i = 0; i < textBoxs.length; i++) {
-                    const textBox = textBoxs[i];
-
-                    if (textBox !== null) {
-                        const textBoxString = textBox.toString();
-                        const dom = new JSDOM(textBoxString);
-                        const document = dom.window.document;
-
-                        const imgElements = document.querySelectorAll('img.x1ey2m1c');
-                        let imgSource = imgElements[0].getAttribute('src');
-
-                        // check img src
-                        if (imgSource) {
-                            // jika post belum pernah di komentari
-                            if (![...commentedPosts].some(item => compareUrlsUntilJpg(item, imgSource))) {
-                                const commentPromise = (async () => {
-                                    await page.waitForSelector(`.item-${i} div[role='textbox']`);
-                                    await page.type(`.item-${i} div[role='textbox']`, configAccount.comment);
-                                    await page.keyboard.press("Enter");
-
-                                    commentedPosts.add(imgSource);
-                                    await writeCommentedPosts();
-                                    console.log("Postingan berhasil dikomentari");
-                                })();
-
-                                commentPromises.push(commentPromise);
-                            } else {
-                                console.log('Postingan sudah dikomentari. Melewati...');
-                            }
-                        }
-                    }
-                    else {
-                        console.log("Tidak menemukan gambar. Melewati...");
-                    }
-                    await delay(1000);
-                }
-
-                return Promise.all(commentPromises);
-            }
-
             // run function to comment on the post
-            await commentOnPosts(page).then(async () => {
+            await commentOnPosts(page, textBoxs).then(async () => {
                 console.log("Refreshing...")
-                await page.reload({ waitUntil: 'networkidle2' })
+                await page.reload({ waitUntil: 'networkidle0' })
             });
         }
     } catch (error) {
         console.error('something error : ', error);
     }
+}
+
+async function commentOnPosts(page, textBoxs) {
+    const commentPromises = [];
+
+    for (let i = 0; i < textBoxs.length; i++) {
+        const textBox = textBoxs[i];
+
+        if (textBox !== null) {
+            const textBoxString = textBox.toString();
+            const dom = new JSDOM(textBoxString);
+            const document = dom.window.document;
+
+            const imgElements = document.querySelectorAll('img.x1ey2m1c');
+            let imgSource = imgElements[0].getAttribute('src');
+
+            // check img src
+            if (imgSource) {
+                // jika post belum pernah di komentari
+                if (![...commentedPosts].some(item => compareUrlsUntilJpg(item, imgSource))) {
+                    const commentPromise = (async () => {
+                        await page.waitForSelector(`.item-${i} div[role='textbox']`);
+                        await page.type(`.item-${i} div[role='textbox']`, configAccount.comment);
+                        await page.keyboard.press("Enter");
+
+                        commentedPosts.add(imgSource);
+                        await writeCommentedPosts();
+                        console.log("Postingan berhasil dikomentari");
+                    })();
+
+                    commentPromises.push(commentPromise);
+                } else {
+                    console.log('Postingan sudah dikomentari. Melewati...');
+                }
+            }
+        }
+        // else {
+        //   console.log("Tidak menemukan gambar. Melewati...");
+        // }
+        // await delay(1000);
+    }
+
+    return Promise.all(commentPromises);
 }
 
 // run main function
