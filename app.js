@@ -8,7 +8,6 @@ const axios = require('axios');
 const bcrypt = require('bcrypt');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
-const { KnownDevices } = require("puppeteer-core")
 
 // config
 const commentedPosts = new Set(commentedFile);
@@ -75,7 +74,7 @@ async function extractItems() {
       // if (checkImage && checkAdmin) {
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-        // if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
+        if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
         const imageElement = checkImage.querySelector('img.x1ey2m1c');
         const result = imageElement ? imageElement.src : null
         if (result !== null) {
@@ -84,7 +83,7 @@ async function extractItems() {
           i = 999;
           break;
         }
-        // }
+        }
       }
     }
   }
@@ -121,10 +120,11 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
       executablePath: '/usr/bin/chromium-browser',
+      // executablePath: './chrome/win64-116.0.5845.96/chrome-win64/chrome.exe',
     });
 
     // setup browser | just ignore it
