@@ -69,10 +69,10 @@ async function extractItems() {
 
   for (let i = 0; i < 100; i++) {
     if (feedElements[i]) {
-      const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-
+      
       const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(8)');
-
+      const checkAdmin = feedElements[i].querySelector(".x1j85h84");
+      
       if (checkImage && checkAdmin) {
         if (checkAdmin.innerHTML === 'Admin') {
           const imageElement = checkImage.querySelector('img.x1ey2m1c');
@@ -123,7 +123,7 @@ async function mainBot() {
       headless: true,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
@@ -133,7 +133,7 @@ async function mainBot() {
     await page.setViewport({ width: 1920, height: 1080 });
     await page.goto('https://web.facebook.com/', {
       timeout: 0,
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle2',
     });
 
     // login process
@@ -146,13 +146,13 @@ async function mainBot() {
     await page.keyboard.press('Enter');
 
     // waiting page load
-    await page.waitForNavigation({ waitUntil: 'networkidle0' });
+    await page.waitForNavigation({ waitUntil: 'networkidle2' });
     console.log('Login success...');
 
     await page.goto(formatGroup(configAccount.group_url) + '?sorting_setting=CHRONOLOGICAL',
       {
         timeout: 0,
-        waitUntil: 'networkidle0',
+        waitUntil: 'networkidle2',
       }
     );
     console.log('Go to group url : ', formatGroup(configAccount.group_url));
@@ -171,11 +171,12 @@ async function mainBot() {
         break; // Exit the loop if the feed is visible  
       }
 
-      await page.reload({ waitUntil: 'networkidle0' });
+      await page.reload({ waitUntil: 'networkidle2' });
       await delay(3000); // Wait for 3 second before checking again
     }
 
     while (true) {
+      console.log("Checking post...")
       const items = await scrapeItems(page, extractItems, 100);
 
       let textBoxs = [];
@@ -208,7 +209,7 @@ async function mainBot() {
       // run function to comment on the post
       await commentOnPosts(page, textBoxs).then(async () => {
         console.log("Refreshing...")
-        await page.reload({ waitUntil: 'networkidle0' })
+        await page.reload({ waitUntil: 'networkidle2' })
       });
     }
   } catch (error) {
@@ -235,7 +236,6 @@ async function commentOnPosts(page, textBoxs) {
         // jika post belum pernah di komentari
         if (![...commentedPosts].some(item => compareUrlsUntilJpg(item, imgSource))) {
           const commentPromise = (async () => {
-            await page.waitForSelector(`.item-${i} div[role='textbox']`);
             await page.type(`.item-${i} div[role='textbox']`, configAccount.comment);
             await page.keyboard.press("Enter");
 
