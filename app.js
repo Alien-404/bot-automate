@@ -8,6 +8,7 @@ const axios = require('axios');
 const bcrypt = require('bcrypt');
 const jsdom = require('jsdom');
 const { JSDOM } = jsdom;
+const { KnownDevices } = require("puppeteer-core")
 
 // config
 const commentedPosts = new Set(commentedFile);
@@ -74,16 +75,16 @@ async function extractItems() {
       // if (checkImage && checkAdmin) {
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-        if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
-          const imageElement = checkImage.querySelector('img.x1ey2m1c');
-          const result = imageElement ? imageElement.src : null
-          if (result !== null) {
-            feedElements[i].classList.add(`item-0`);
-            newPosts.push(result);
-            i = 999;
-            break;
-          }
+        // if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
+        const imageElement = checkImage.querySelector('img.x1ey2m1c');
+        const result = imageElement ? imageElement.src : null
+        if (result !== null) {
+          feedElements[i].classList.add(`item-0`);
+          newPosts.push(result);
+          i = 999;
+          break;
         }
+        // }
       }
     }
   }
