@@ -123,7 +123,7 @@ async function mainBot() {
       headless: true,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      // executablePath: '/usr/bin/chromium-browser',
+      executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
