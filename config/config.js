@@ -44,7 +44,6 @@ async function setup() {
       type: 'input',
       name: 'email',
       message: 'Masukkan email Facebook Anda:',
-      validate: validateEmail,
       when: process.stdin.isTTY,
     },
     {
