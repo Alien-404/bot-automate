@@ -124,7 +124,6 @@ async function mainBot() {
             args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
             channel: 'chrome',
             executablePath: '/usr/bin/chromium-browser',
-            // executablePath: './chrome/win64-116.0.5845.96/chrome-win64/chrome.exe',
         });
 
         // setup browser | just ignore it
