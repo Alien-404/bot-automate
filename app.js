@@ -64,19 +64,14 @@ async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
-  // const numToPosts = Math.min(feedElements.length, 100)
-
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 50; i++) {
     if (feedElements[i]) {
+      const checkImage = feedElements && feedElements[i].querySelector('img.x1ey2m1c');
 
-      const checkImage = feedElements && feedElements[i].querySelector('div:nth-child(8)');
-
-      // if (checkImage && checkAdmin) {
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
         if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
-          const imageElement = checkImage.querySelector('img.x1ey2m1c');
-          const result = imageElement ? imageElement.src : null
+          const result = checkImage ? checkImage.src : null
           if (result !== null) {
             feedElements[i].classList.add(`item-0`);
             newPosts.push(result);
@@ -178,7 +173,7 @@ async function mainBot() {
 
     while (true) {
       console.log("Checking post...")
-      const items = await scrapeItems(page, extractItems, 100);
+      const items = await scrapeItems(page, extractItems, 50);
 
       let textBoxs = [];
       for (const item of items) {
