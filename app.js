@@ -64,17 +64,22 @@ async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 30; i++) {
     if (feedElements[i]) {
       const checkImage = feedElements && feedElements[i].querySelector('img.x1ey2m1c');
+
+      const post = {
+        image: null,
+      };
 
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
         if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
           const result = checkImage ? checkImage.src : null
           if (result !== null) {
+            post.image = result
             feedElements[i].classList.add(`item-0`);
-            newPosts.push(result);
+            newPosts.push(post);
             i = 999;
             break;
           }
@@ -86,27 +91,39 @@ async function extractItems() {
 }
 
 
-async function scrapeItems(
-  page,
-  extractItems,
-  itemCount,
-  scrollDelay = 100,
-) {
-  let items = [];
+async function scrapeItems(page, extractItems, itemCount, scrollDelay = 100) {
+  let itemsWithImages = [];
+
   try {
     let previousHeight;
-    while (items.length < itemCount) {
-      items = await page.evaluate(extractItems);
-      previousHeight = await page.evaluate('document.body.scrollHeight');
-      await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-      await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
-      await page.waitForTimeout(scrollDelay);
-      if (items.length > 0) {
-        break;
+    let checkedPosts = 0;
+
+    while (checkedPosts < itemCount) {
+      const items = await page.evaluate(extractItems);
+      
+      for (const item of items) {
+        if (item.image !== null) {
+          itemsWithImages.push(item.image);
+          checkedPosts = 999;
+          break;
+        }
+      }
+
+      if (checkedPosts < itemCount) {
+        previousHeight = await page.evaluate('document.body.scrollHeight');
+        await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
+        await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+        await page.waitForTimeout(scrollDelay);
+        
+        checkedPosts++;
+        if (checkedPosts === itemCount) {
+          break;
+        }
       }
     }
   } catch (e) { }
-  return items;
+
+  return itemsWithImages;
 }
 
 // main func
@@ -173,7 +190,7 @@ async function mainBot() {
 
     while (true) {
       console.log("Checking post...")
-      const items = await scrapeItems(page, extractItems, 50);
+      const items = await scrapeItems(page, extractItems, 30);
 
       let textBoxs = [];
       for (const item of items) {
