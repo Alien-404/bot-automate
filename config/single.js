@@ -24,7 +24,7 @@ async function setup() {
 
   // change
   if (argv.email) {
-    configFile.account.email = argv.email;
+    configFile.account.email = (argv.email).toString();
   }
 
   if (argv.password) {
