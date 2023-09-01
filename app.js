@@ -74,7 +74,7 @@ async function extractItems() {
 
       if (checkImage) {
         const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-        if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
+        if (checkAdmin && (checkAdmin.innerHTML === 'Admin' || checkAdmin.innerHTML === 'Moderator')) {
           const result = checkImage ? checkImage.src : null
           if (result !== null) {
             post.image = result
@@ -132,10 +132,10 @@ async function mainBot() {
     // config puppeteer | just ignore it
     console.log('Launch browser...');
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: ['--no-sandbox', '--disable-gpu', "--disable-notifications"],
       channel: 'chrome',
-      executablePath: '/usr/bin/chromium-browser',
+      // executablePath: '/usr/bin/chromium-browser',
     });
 
     // setup browser | just ignore it
