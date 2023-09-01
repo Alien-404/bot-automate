@@ -74,7 +74,7 @@ async function extractItems() {
 
             if (checkImage) {
                 const checkAdmin = feedElements[i].querySelector(".x1j85h84");
-                if (checkAdmin && checkAdmin.innerHTML === 'Admin') {
+                if (checkAdmin && (checkAdmin.innerHTML === 'Admin' || checkAdmin.innerHTML === 'Moderator')) {
                     const result = checkImage ? checkImage.src : null
                     if (result !== null) {
                         post.image = result
