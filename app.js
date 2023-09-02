@@ -64,7 +64,7 @@ async function extractItems() {
   const feedElements = document.querySelectorAll('div[role="feed"] > .x1yztbdb');
   const newPosts = [];
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 10; i++) {
     if (feedElements[i]) {
       const checkImage = feedElements && feedElements[i].querySelector('img.x1ey2m1c');
 
@@ -190,7 +190,7 @@ async function mainBot() {
 
     while (true) {
       console.log("Checking post...")
-      const items = await scrapeItems(page, extractItems, 15);
+      const items = await scrapeItems(page, extractItems, 10);
 
       let textBoxs = [];
       for (const item of items) {
